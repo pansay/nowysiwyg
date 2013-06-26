@@ -17,7 +17,7 @@
 //         'bottom': ['i','z'],
 //         'left': ['b']
 //     }
-// });
+// }); TEST
 
 (function (window, $) {
 
