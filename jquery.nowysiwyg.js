@@ -223,6 +223,8 @@
                 $.extend(true, this.config.stylesButtonsSets[side], this.config.stylesButtonsSetsCommon);
                 this.config.stylesButtons[side] = $.extend(true, {}, this.config.stylesButtonsCommon, this.config.stylesButtons[side]);
 
+                // check nextSides too
+
                 for (var stylesI = 0, stylesL = this.config.stylesInheritedBorders.length; stylesI < stylesL; stylesI += 1) {
                     var borderStyleName = this.config.stylesInheritedBorders[stylesI];
                     var styleName = 'border-' + side + '-' + borderStyleName;
