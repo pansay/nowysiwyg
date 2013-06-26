@@ -78,6 +78,14 @@
                 'left': 'right'
             },
 
+            // used for size border to be done on group and not buttons to avoid double borders
+            nextSides: {
+                'top': 'right',
+                'right': 'bottom',
+                'bottom': 'left',
+                'left': 'top'
+            },
+
             // styles common to all the 4 buttons sets (for the 4 sides)
             stylesButtonsSetsCommon: {
                 'position': 'absolute',
