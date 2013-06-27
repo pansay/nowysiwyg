@@ -17,7 +17,7 @@
 //         'bottom': ['i','z'],
 //         'left': ['b']
 //     }
-// }); TEST
+// }); 
 
 (function (window, $) {
 
@@ -36,10 +36,12 @@
             // the buttons definition
             buttons: {
                 'top': ['b', 'i','p','bq'],
-                'right': [],
-                'bottom': [],
-                'left': []
+                'right': ['i'],
+                'bottom': ['bq'],
+                'left': ['p']
             },
+
+            size: 25,   // size in px
 
             wrapperClass: 'nowysiwyg-wrapper',
 
@@ -86,6 +88,13 @@
                 'left': 'top'
             },
 
+            previousSides: {
+                'top': 'left',
+                'right': 'top',
+                'bottom': 'right',
+                'left': 'bottom'
+            },
+
             // styles common to all the 4 buttons sets (for the 4 sides)
             stylesButtonsSetsCommon: {
                 'position': 'absolute',
@@ -94,26 +103,6 @@
 
             // buttons set styles per side
             stylesButtonsSets: {
-                'top': {
-                    'left': '0',
-                    'top': '-27px',
-                    'height': '25px'
-                }, 
-                'right': {
-                    'right': '-25px',
-                    'top': '0',
-                    'width': '25px'
-                },
-                'bottom':{
-                    'bottom': '-27px',
-                    'right': '0px',
-                    'height': '25px'
-                },
-                'left': {
-                    'left': '-25px',
-                    'top': '0px',
-                    'width': '25px'
-                }
             },
 
             stylesButtonsCommon: {
@@ -122,9 +111,7 @@
             },
 
             stylesButtonsCommonInner: {
-                'width': '25px',
                 'display': 'table-cell',
-                'height': '25px',
                 'text-align': 'center',
                 'vertical-align': 'middle',
                 'cursor': 'pointer'
@@ -151,18 +138,6 @@
             },
 
             stylesButtons: {
-                // 'top': {
-                   
-                // }, 
-                // 'right': {
-                   
-                // },
-                // 'bottom':{
-                    
-                // },
-                // 'left': {
-                    
-                // }
             },          
 
             // styles to inherit
@@ -184,34 +159,53 @@
 
             this.config = $.extend(true, {}, this.defaults, this.options, this.metadata);
 
+            this.removePrevious();
+
             this.setStyles();
             
             this.create();
+
+            this.handleResize();
 
             return this;
 
         },
 
+        removePrevious: function () {
+
+            this.$elem.siblings('ul').remove();
+            this.$elem.unwrap(this.config.wrapperClass);
+
+        },
+
         // combine all the common, defined and inherited styles for all the sides
         setStyles: function () {
+            // buttons size
+            var size = this.config.size;
+
+            this.config.stylesButtonsCommonInner.width = size + 'px';
+            this.config.stylesButtonsCommonInner.height = size + 'px';
 
             // loop defined list of styles, retrieve style from input element
             var styleName;
 
+            // style the buttons sets common
             while (styleName = this.config.stylesInherited.pop()) {
                 this.config.stylesButtonsSetsCommon[styleName] = this.$elem.css(styleName);
             }
 
+            // style the wrapper
             while (styleName = this.config.stylesWrapperInherited.pop()) {
                 this.config.stylesWrapper[styleName] = this.$elem.css(styleName);
             }
 
-            // style the buttons hover
+            // style the buttons inner off
             for (var styleName in this.config.stylesButtonsCommonInnerInheritedOff) {
                 var styleNameGet = this.config.stylesButtonsCommonInnerInheritedOff[styleName];
                 this.config.stylesButtonsCommonInnerOff[styleName] = this.$elem.css(styleNameGet);
             }
 
+            // style the buttons inner on
             for (var styleName in this.config.stylesButtonsCommonInnerInheritedOn) {
                 var styleNameGet = this.config.stylesButtonsCommonInnerInheritedOn[styleName];
                 this.config.stylesButtonsCommonInnerOn[styleName] = this.$elem.css(styleNameGet);
@@ -220,23 +214,59 @@
             // style the buttons sets
             for (var sidesI = 0, sidesL = this.config.sides.length; sidesI < sidesL; sidesI += 1) {
                 var side = this.config.sides[sidesI];
+                var nextSide = this.config.nextSides[side];
+                var previousSide = this.config.previousSides[side];
+
+                this.config.stylesButtonsSets[side] = {};
+
                 $.extend(true, this.config.stylesButtonsSets[side], this.config.stylesButtonsSetsCommon);
+
+                // name of the border width style for the side
+                var styleName = 'border-' + side + '-width';
+
+                // size of the textarea border
+                var borderSize = parseInt(this.$elem.css(styleName));
+
+                // fix width for left and right sides
+                if(side == 'left' || side == 'right') {
+                    this.config.stylesButtonsSets[side].width = size + borderSize + 'px';
+                }
+
+                // position the buttons sets
+                this.config.stylesButtonsSets[side][previousSide] = 0;
+                this.config.stylesButtonsSets[side][side] = '-' + (size + borderSize) + 'px';
+
                 this.config.stylesButtons[side] = $.extend(true, {}, this.config.stylesButtonsCommon, this.config.stylesButtons[side]);
+
+                // loop inherited styles
+                for (var stylesI = 0, stylesL = this.config.stylesInheritedBorders.length; stylesI < stylesL; stylesI += 1) {
+
+                    var borderStyleName = this.config.stylesInheritedBorders[stylesI];
+
+                    // get the style of the textarea side we're on. we'll use it on the three remaining sided to cover, one on the buttons sets and two on the actual buttons
+                    var styleName = 'border-' + side + '-' + borderStyleName;
+                    var styleTextareaBorder = this.$elem.css(styleName);
+
+                    // the next side to be set at the buttons set level
+                    var styleNameNext = 'border-' + nextSide + '-' + borderStyleName;
+
+                    this.config.stylesButtonsSets[side][styleNameNext] = styleTextareaBorder;
 
                 // check nextSides too
 
-                for (var stylesI = 0, stylesL = this.config.stylesInheritedBorders.length; stylesI < stylesL; stylesI += 1) {
-                    var borderStyleName = this.config.stylesInheritedBorders[stylesI];
-                    var styleName = 'border-' + side + '-' + borderStyleName;
-                    var styleTextareaBorder = this.$elem.css(styleName);
+                    // style the buttons
                     for (var buttonSidesI = 0; buttonSidesI < sidesL; buttonSidesI += 1) {
+
                         var buttonSide = this.config.sides[buttonSidesI]
-                        if(buttonSide != this.config.oppositeSides[side]) {
+
+                        // style the two remaining sides
+                        if(buttonSide != this.config.oppositeSides[side] && buttonSide != this.config.nextSides[side]) {
                             var styleName = 'border-' + buttonSide + '-' + borderStyleName;
                             this.config.stylesButtons[side][styleName] = styleTextareaBorder;
                         }
                         
                     }
+
                 }
 
             }
@@ -248,6 +278,10 @@
             // create wrapper around the textarea
             var $wrapper = this.$elem.wrap('<div class="' + this.config.wrapperClass + '">').parent()
                 .css(this.config.stylesWrapper);
+
+            // // save previous textarea styles
+            // this.config.stylesTextareaPrevious(this.config.stylesTextarea);
+            // will have to do styles one by one, save them, in order to use them for removePrevious !!
 
             // style the textarea
             this.$elem.css(this.config.stylesTextarea);
@@ -296,6 +330,25 @@
                     that.buttons[buttonName]($(this).closest('div').find('textarea')[0]);
                 })
             ;
+
+        },
+
+        // take care of the textarea resize event
+        handleResize: function () {
+
+            this.$elem.bind('mouseup',function(){
+                if(this.oldwidth  === null){this.oldwidth  = this.style.width;}
+                if(this.oldheight === null){this.oldheight = this.style.height;}
+                if(this.style.width != this.oldwidth || this.style.height != this.oldheight){
+                    $(this).trigger('resize');
+                    this.oldwidth  = this.style.width;
+                    this.oldheight = this.style.height;
+                }
+            });
+
+            this.$elem.on('resize', function () {
+                $(this).nowysiwyg(that.options);
+            });
 
         },
 

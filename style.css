@@ -1,0 +1,24 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+textarea {
+	margin: 200px;
+}
+
+#one {
+	border: 5px solid black;
+}
+
+#two {
+	
+	border-top: 2px dashed maroon;
+	border-right: 3px solid blue;
+	border-bottom: 4px solid purple;
+	border-left: 1px dotted green;
+}
+
+#three {
+	border: 1px solid black;
+}
