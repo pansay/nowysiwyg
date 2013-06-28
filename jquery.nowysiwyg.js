@@ -1,24 +1,33 @@
 // jQuery plug-in
 // @title: Nowysiwyg
+// @link: http://github.com/pansay/nowysiwyg
 // @author: Jan Krepelka, jan.krepelka@gmail.com, www.pansay.com
 // @description: provides non-wysiwyg content edition buttons, to add html code to textareas.
 // @copyright: copyright 2013 Jan Krepelka
 // @license: GNU/GPL http://www.gnu.org/licenses/gpl.html
 // @date: 2013
 // @usage: 
-//  Nowysiwyg.buttons.z = function (el) {
-//   that.addTag('z', el);  // custom buttons
-//  }
 
-// $('textarea').nowysiwyg({
-//     // options
-//     buttons: {
-//         'top': ['b', 'i'],
-//         'right': ['i', 'b'],
-//         'bottom': ['i','z'],
-//         'left': ['b']
-//     }
-// }); 
+    // Nowysiwyg.custom.whatever = function () {
+    //     return 'whatever';
+    // }
+
+    // Nowysiwyg.buttons.z = function (el) {
+    //     that.addTag('z', el);
+    // }
+
+    // Nowysiwyg.buttons.w = function (el) {
+    //     alert(that.custom.whatever());
+    // }
+
+    // $('textarea').nowysiwyg({
+    //     buttons: {
+    //         'top': ['b', 'i'],
+    //         'right': ['i', 'b'],
+    //         'bottom': ['i','z','w'],
+    //         'left': ['b','i','p']
+    //     }
+    // });
 
 (function (window, $) {
 
@@ -372,18 +381,18 @@
 
         },
 
-        addTag: function(tag, el, options) {
+        addTag: function(tag, el, attributes) {
 
-            var optionsString = '';
-            if (typeof(options) != 'undefined') {
+            var attrString = '';
+            if (typeof(attributes) != 'undefined') {
 
                 for(var attr in options) {
-                    optionsString += ' ' + attr + '="' + options[attr] + '"';
+                    attrString += ' ' + attr + '="' + attributes[attr] + '"';
                 }
 
             }
 
-            var tagBefore = "<" + tag + optionsString +">";
+            var tagBefore = "<" + tag + attrString +">";
             var tagAfter = "</" + tag + ">";
             
             if (el.setSelectionRange) {
@@ -450,27 +459,31 @@
 
             a: function (el) {
 
-                var options = {
+                var attributes = {
                     'href': '',
                 };
 
-                that.addTag('a', el, options);
+                that.addTag('a', el, attributes);
 
             },
 
             ax: function (el) {
 
-                var options = {
+                var attributes = {
                     'href': '',
                     'rel': 'external',
                     'class': 'external',
                     'target': '_blank'
                 };
 
-                that.addTag('a', el, options);
+                that.addTag('a', el, attributes);
 
             },
 
+
+        },
+
+        custom: {
 
         }
 
@@ -478,6 +491,7 @@
 
     Nowysiwyg.buttons = Nowysiwyg.prototype.buttons;
     Nowysiwyg.defaults = Nowysiwyg.prototype.defaults;
+    Nowysiwyg.custom = Nowysiwyg.prototype.custom;
 
     $.fn.nowysiwyg = function (options) {
 
