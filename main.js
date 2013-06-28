@@ -13,12 +13,12 @@ $(function() {
 	}
 
 	$('textarea').nowysiwyg({
-		buttons: {
-            'top': ['b', 'i'],
-            'right': ['i', 'b'],
-            'bottom': ['i','z','w'],
-            'left': ['b','i','p']
-        }
+		// buttons: {
+  //           'top': ['b', 'i'],
+  //           'right': ['i', 'b'],
+  //           'bottom': ['i','z','w'],
+  //           'left': ['b','i','p']
+  //       }
 	});
 
 

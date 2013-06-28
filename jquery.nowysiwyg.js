@@ -31,7 +31,7 @@
 
 (function (window, $) {
 
-    var Nowysiwyg = function (elem, options){
+    var Nowysiwyg = function (elem, options) {
         this.elem = elem;
         this.$elem = $(elem);
         this.options = options;
@@ -45,22 +45,25 @@
 
             // the buttons definition
             buttons: {
-                'top': ['ax', 'a', 'p'],
+                'top': ['tbl', 'hr', 'ax', 'a', 'pr', 'p'],
                 'right': ['h6', 'h5', 'h4', 'h3'],
-                'bottom': ['rq', 'lq', 'rqf', 'lqf', 'bq'],
+                'bottom': ['rq', 'lq', 'rqf', 'lqf', 'bq', 'bqq'],
                 'left': ['b', 'i', 'uc']
             },
 
-            size: 25,   // size in px
+            // buttons size in px
+            size: 25,   
 
+            // class to add to the wrapper div
             wrapperClass: 'nowysiwyg-wrapper',
 
-            // styles for the wrapper element
+            // styles for the wrapper div
             stylesWrapper: {
                 'display': 'block',
                 'position': 'relative'
             },
 
+            // styles that the wrapper div inherits from the textarea
             stylesWrapperInherited: [
                 'width',
                 'height',
@@ -70,7 +73,7 @@
                 'margin-left'
             ],
 
-            // to set
+            // styles applied  to the textarea
             stylesTextarea: {
                 'position': 'absolute',
                 'margin-top': '0',
@@ -79,7 +82,7 @@
                 'margin-left': '0'
             },
 
-            // reset if plugin removed
+            // styles of the textarea that will be saved and reapplied on remove
             stylesTextareaSaved: {
 
             },
@@ -92,6 +95,7 @@
                 'left'
             ],
 
+            // opposite sides
             oppositeSides: {
                 'top': 'bottom',
                 'right': 'left',
@@ -99,7 +103,7 @@
                 'left': 'right'
             },
 
-            // used for size border to be done on group and not buttons to avoid double borders
+            // next sides used for size border to be done on group and not buttons to avoid double borders
             nextSides: {
                 'top': 'right',
                 'right': 'bottom',
@@ -107,6 +111,7 @@
                 'left': 'top'
             },
 
+            // previous sides: each side gets positioned absolutely with the previous side's name as property 0
             previousSides: {
                 'top': 'left',
                 'right': 'top',
@@ -120,15 +125,17 @@
                 'display': 'table'
             },
 
-            // buttons set styles per side
+            // styles for buttons sets, per side
             stylesButtonsSets: {
             },
 
+            // styles for the buttons
             stylesButtonsCommon: {
                 'display': 'table',
                 'float' : 'left'
             },
 
+            // styles for the buttons inner span
             stylesButtonsCommonInner: {
                 'display': 'table-cell',
                 'text-align': 'center',
@@ -136,36 +143,39 @@
                 'cursor': 'pointer'
             },
 
-            // sets the left-hand property of the button to inherit the value of the right-hand property of the textarea
+            // styles of buttons, mouse off, sets the left-hand property of the buttons to inherit the value of the right-hand property of the textarea
             stylesButtonsCommonInnerInheritedOff: {
                 'background-color': 'background-color',
                 'color': 'color'
             },
 
-            // inverted colors
+            // styles of buttons, mouse on, sets the left-hand property of the buttons to inherit the value of the right-hand property of the textarea
             stylesButtonsCommonInnerInheritedOn: {
                 'background-color': 'color',
                 'color': 'background-color'
             },
 
+            // styles of buttons, mouse off
             stylesButtonsCommonInnerOff: {
              
             },
 
+            // styles of buttons, mouse on
             stylesButtonsCommonInnerOn: {
                 
             },
 
+            // styles of buttons, by side
             stylesButtons: {
             },          
 
-            // styles to inherit
+            // styles of the buttons sets, inherited from the textarea
             stylesInherited: [
                 'font-family',
                 'font-size'
             ],
 
-            // to be applied for the 4 borders, border-[X]-[side]
+            // styles of the borders, used for all sides, pattern: border-[style]-[side]
             stylesInheritedBorders: [
                 'color', 
                 'style',
@@ -201,22 +211,22 @@
 
         },
 
-        // combine all the common, defined and inherited styles for all the sides
+        // combine all the common, defined and inherited styles for all the sides of all the elements
         setStyles: function () {
+
             // buttons size
             var size = this.config.size;
 
+            // buttons width and height
             this.config.stylesButtonsCommonInner.width = size + 'px';
             this.config.stylesButtonsCommonInner.height = size + 'px';
 
-            // loop defined list of styles, retrieve style from input element
+            // var to be used in the styles definitions loops
             var styleName;
-
 
             // save previous textarea styles
             for (var styleName in this.config.stylesTextarea) {
-                var style = this.$elem.css(styleName);
-                this.config.stylesTextareaSaved[styleName] =  style;
+                this.config.stylesTextareaSaved[styleName] = this.$elem.css(styleName);
             }
 
             // style the buttons sets common
@@ -273,7 +283,7 @@
 
                     var borderStyleName = this.config.stylesInheritedBorders[stylesI];
 
-                    // get the style of the textarea side we're on. we'll use it on the three remaining sided to cover, one on the buttons sets and two on the actual buttons
+                    // get the style of the textarea side we're on. we'll use it on the three remaining sides to cover, one on the buttons sets and two on the actual buttons
                     var styleName = 'border-' + side + '-' + borderStyleName;
                     var styleTextareaBorder = this.$elem.css(styleName);
 
@@ -304,9 +314,6 @@
         create: function () {
 
             // create wrapper around the textarea
-
-            //console.log(this.$elem);
-
             var $wrapper = this.$elem.wrap('<div class="' + this.config.wrapperClass + '">').parent()
                 .css(this.config.stylesWrapper);
 
@@ -320,7 +327,6 @@
 
             // loop the 4 sides
             var side;
-            //console.log(this.defaults.sides);
             while (side = this.config.sides.pop()) {
 
                 // create each side's buttons set and style it
@@ -365,21 +371,36 @@
         // take care of the textarea resize event
         handleResize: function () {
 
-            this.$elem.bind('mouseup',function(){
-                if(this.oldwidth  === null){this.oldwidth  = this.style.width;}
-                if(this.oldheight === null){this.oldheight = this.style.height;}
-                if(this.style.width != this.oldwidth || this.style.height != this.oldheight){
-                    $(this).trigger('resize');
-                    this.oldwidth  = this.style.width;
-                    this.oldheight = this.style.height;
-                }
-            });
-
-            this.$elem.on('resize', function () {
-                $(this).nowysiwyg(that.options);
-            });
+            this.$elem
+                .on('mouseup', function () {
+                    if (this.oldwidth  === null) {
+                        this.oldwidth = this.style.width;
+                    }
+                    if (this.oldheight === null) {
+                        this.oldheight = this.style.height;
+                    }
+                    if (this.style.width != this.oldwidth || this.style.height != this.oldheight) {
+                        $(this).trigger('resize');
+                        this.oldwidth  = this.style.width;
+                        this.oldheight = this.style.height;
+                    }
+                })
+                .on('resize', function () {
+                    $(this).nowysiwyg(that.options);
+                })
+            ;
 
         },
+
+        // ZZ TODO rereading at here. add addHTML for, quotes etc + prep images 
+
+            //         buttons: {
+            //     'top': ['tbl', 'hr', 'ax', 'a', 'pr', 'p'],
+            //     'right': ['h6', 'h5', 'h4', 'h3'],
+            //     'bottom': ['rq', 'lq', 'rqf', 'lqf', 'bq', 'bqq'],
+            //     'left': ['b', 'i', 'uc']
+            // },
+
 
         addTag: function(tag, el, attributes) {
 
