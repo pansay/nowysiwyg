@@ -1,10 +1,10 @@
 // jQuery plug-in
-// title: Nowysiwyg
-// author: Jan Krepelka, jan.krepelka@gmail.com, www.pansay.com
-// description: provides non-wysiwyg content edition buttons, to add html code to textareas.
-// license: bugger-off
-// date: 2013
-// usage: 
+// @title: Nowysiwyg
+// @author: Jan Krepelka, jan.krepelka@gmail.com, www.pansay.com
+// @description: provides non-wysiwyg content edition buttons, to add html code to textareas.
+// @license: "No problem Bugroff" license
+// @date: 2013
+// @usage: 
 //  Nowysiwyg.buttons.z = function (el) {
 //   that.addTag('z', el);  // custom buttons
 //  }
@@ -60,9 +60,18 @@
                 'margin-left',
             ],
 
+            // to set
             stylesTextarea: {
                 'position': 'absolute',
-                'margin': '0'
+                'margin-top': '0',
+                'margin-right': '0',
+                'margin-bottom': '0',
+                'margin-left': '0'
+            },
+
+            // reset if plugin removed
+            stylesTextareaSaved: {
+
             },
 
             // should not change too often...
@@ -173,8 +182,12 @@
 
         removePrevious: function () {
 
-            this.$elem.siblings('ul').remove();
-            this.$elem.unwrap(this.config.wrapperClass);
+            if (typeof(this.$elem.data('saved-styles')) != 'undefined') {
+                this.$elem.siblings('ul').remove();
+                this.$elem.unwrap(this.config.wrapperClass);
+                var stylesTextareaSaved = this.$elem.data('saved-styles');
+                this.$elem.css(stylesTextareaSaved);
+            }
 
         },
 
@@ -188,6 +201,13 @@
 
             // loop defined list of styles, retrieve style from input element
             var styleName;
+
+
+            // save previous textarea styles
+            for (var styleName in this.config.stylesTextarea) {
+                var style = this.$elem.css(styleName);
+                this.config.stylesTextareaSaved[styleName] =  style;
+            }
 
             // style the buttons sets common
             while (styleName = this.config.stylesInherited.pop()) {
@@ -252,8 +272,6 @@
 
                     this.config.stylesButtonsSets[side][styleNameNext] = styleTextareaBorder;
 
-                // check nextSides too
-
                     // style the buttons
                     for (var buttonSidesI = 0; buttonSidesI < sidesL; buttonSidesI += 1) {
 
@@ -276,15 +294,16 @@
         create: function () {
 
             // create wrapper around the textarea
+
+            //console.log(this.$elem);
+
             var $wrapper = this.$elem.wrap('<div class="' + this.config.wrapperClass + '">').parent()
                 .css(this.config.stylesWrapper);
 
-            // // save previous textarea styles
-            // this.config.stylesTextareaPrevious(this.config.stylesTextarea);
-            // will have to do styles one by one, save them, in order to use them for removePrevious !!
-
-            // style the textarea
-            this.$elem.css(this.config.stylesTextarea);
+            //style the textarea
+            this.$elem
+                .css(this.config.stylesTextarea)
+                .data('saved-styles', this.config.stylesTextareaSaved);
 
             // the buttons sets for the 4 sides
             var $buttonsSets = {};
