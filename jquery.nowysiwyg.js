@@ -2,7 +2,8 @@
 // @title: Nowysiwyg
 // @author: Jan Krepelka, jan.krepelka@gmail.com, www.pansay.com
 // @description: provides non-wysiwyg content edition buttons, to add html code to textareas.
-// @license: "No problem Bugroff" license
+// @copyright: copyright 2013 Jan Krepelka
+// @license: GNU/GPL http://www.gnu.org/licenses/gpl.html
 // @date: 2013
 // @usage: 
 //  Nowysiwyg.buttons.z = function (el) {
@@ -35,10 +36,10 @@
 
             // the buttons definition
             buttons: {
-                'top': ['b', 'i','p','bq'],
-                'right': ['i'],
-                'bottom': ['bq'],
-                'left': ['p']
+                'top': ['ax', 'a', 'p'],
+                'right': ['h6', 'h5', 'h4', 'h3'],
+                'bottom': ['rq', 'lq', 'rqf', 'lqf', 'bq'],
+                'left': ['b', 'i', 'uc']
             },
 
             size: 25,   // size in px
@@ -371,9 +372,18 @@
 
         },
 
-        addTag: function(tag, el) {
+        addTag: function(tag, el, options) {
 
-            var tagBefore = "<" + tag + ">";
+            var optionsString = '';
+            if (typeof(options) != 'undefined') {
+
+                for(var attr in options) {
+                    optionsString += ' ' + attr + '="' + options[attr] + '"';
+                }
+
+            }
+
+            var tagBefore = "<" + tag + optionsString +">";
             var tagAfter = "</" + tag + ">";
             
             if (el.setSelectionRange) {
@@ -394,15 +404,24 @@
                     el.value = el.value + tagBefore + tagAfter;
                 }
             }
+
         },
 
         buttons: {
+
             b: function (el) {
                 that.addTag('strong', el);
             },
 
             i: function (el) {
                 that.addTag('em', el);
+            },
+
+            uc: function (el) {
+                var options = {
+                    'class': 'uppercase'
+                };
+                that.addTag('strong', el, options);
             },
 
             p: function (el) {
@@ -412,6 +431,47 @@
             bq: function (el) {
                 that.addTag('blockquote', el);
             },
+
+            h3: function (el) {
+                that.addTag('h3', el);
+            },
+
+            h4: function (el) {
+                that.addTag('h4', el);
+            },
+
+            h5: function (el) {
+                that.addTag('h5', el);
+            },
+
+            h6: function (el) {
+                that.addTag('h6', el);
+            },
+
+            a: function (el) {
+
+                var options = {
+                    'href': '',
+                };
+
+                that.addTag('a', el, options);
+
+            },
+
+            ax: function (el) {
+
+                var options = {
+                    'href': '',
+                    'rel': 'external',
+                    'class': 'external',
+                    'target': '_blank'
+                };
+
+                that.addTag('a', el, options);
+
+            },
+
+
         }
 
     }
