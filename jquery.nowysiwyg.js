@@ -67,7 +67,7 @@
                 'margin-top',
                 'margin-right',
                 'margin-bottom',
-                'margin-left',
+                'margin-left'
             ],
 
             // to set
@@ -170,7 +170,7 @@
                 'color', 
                 'style',
                 'width'
-            ],
+            ]
 
         },
 
@@ -460,7 +460,7 @@
             a: function (el) {
 
                 var attributes = {
-                    'href': '',
+                    'href': ''
                 };
 
                 that.addTag('a', el, attributes);
@@ -478,7 +478,7 @@
 
                 that.addTag('a', el, attributes);
 
-            },
+            }
 
 
         },
