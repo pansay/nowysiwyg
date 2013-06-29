@@ -43,7 +43,7 @@
                 'top': ['tbl', 'hr', 'ax', 'a', 'pr', 'p'],
                 'right': ['h6', 'h5', 'h4', 'h3'],
                 'bottom': ['rq', 'lq', 'rqf', 'lqf', 'bq', 'bqq'],
-                'left': ['b', 'i', 'uc']
+                'left': ['b', 'i', 'uc','nbsp']
             },
 
             // buttons size in px
@@ -387,17 +387,7 @@
 
         },
 
-        // ZZ TODO rereading at here. add addHTML for, quotes etc + prep images 
-
-            //         buttons: {
-            //     'top': ['tbl', 'hr', 'ax', 'a', 'pr', 'p'],
-            //     'right': ['h6', 'h5', 'h4', 'h3'],
-            //     'bottom': ['rq', 'lq', 'rqf', 'lqf', 'bq', 'bqq'],
-            //     'left': ['b', 'i', 'uc']
-            // },
-
-
-        addTag: function(tag, el, attributes) {
+        addTag: function (tag, el, attributes) {
 
             var attrString = '';
             if (typeof(attributes) != 'undefined') {
@@ -432,6 +422,10 @@
 
         },
 
+        addHTML: function (html, el) {
+
+        }
+
         buttons: {
 
             b: function (el) {
@@ -442,17 +436,32 @@
                 that.addTag('em', el);
             },
 
+            // uppercase
             uc: function (el) {
-                var options = {
+
+                var attributes = {
                     'class': 'uppercase'
                 };
-                that.addTag('strong', el, options);
+                that.addTag('strong', el, attributes);
+
             },
 
             p: function (el) {
                 that.addTag('p', el);
             },
 
+            // p with text aligned on the right
+            pr: function (el) {
+
+                var attributes = {
+                    'class': 'text-align-right'
+                };
+
+                that.addTag('p', el, attributes);
+
+            },
+
+            // <blockquote>
             bq: function (el) {
                 that.addTag('blockquote', el);
             },
@@ -483,6 +492,7 @@
 
             },
 
+            // <a> external
             ax: function (el) {
 
                 var attributes = {
@@ -494,8 +504,45 @@
 
                 that.addTag('a', el, attributes);
 
-            }
+            },
 
+            tbl: function (el) {
+
+            },
+
+            hr: function (el) {
+
+            },
+
+            // non-brekable space
+            nbsp: function (el) {
+
+            },
+
+            // left quote
+            lq: function (el) {
+
+            },
+
+            // right quote
+            rq: function (el) {
+
+            },
+
+            // left quote French
+            lqf: function (el) {
+
+            },
+
+            // right quote French
+            rqf: function (el) {
+
+            },
+
+            // blockquote quote
+            rqf: function (el) {
+
+            },
 
         },
 
