@@ -1,12 +1,7 @@
-// jQuery plug-in
-// @title: Nowysiwyg
-// @link: http://github.com/pansay/nowysiwyg
-// @author: Jan Krepelka, jan.krepelka@gmail.com, www.pansay.com
-// @description: provides non-wysiwyg content edition buttons, to add html code to textareas.
-// @copyright: copyright 2013 Jan Krepelka
-// @license: GNU/GPL http://www.gnu.org/licenses/gpl.html
-// @date: 2013
-// @usage: 
+// jQuery No-Wysiwyg plug-in
+// by pansay web development, www.pansay.com
+// original source: http://github.com/pansay/nowysiwyg
+// example:
 
     // Nowysiwyg.custom.whatever = function () {
     //     return 'whatever';
