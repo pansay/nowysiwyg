@@ -40,10 +40,10 @@
 
             // the buttons definition
             buttons: {
-                'top': ['tbl', 'hr', 'ax', 'a', 'pr', 'p'],
+                'top': ['ax', 'a', 'pr', 'p', 'b', 'i', 'uc', 'del'],
                 'right': ['h6', 'h5', 'h4', 'h3'],
-                'bottom': ['rq', 'lq', 'rqf', 'lqf', 'bq', 'bqq'],
-                'left': ['b', 'i', 'uc','nbsp']
+                'bottom': ['tbl', 'ol', 'li', 'bqq','nbsp', 'hr', 'br'],
+                'left': [ 'q', 'qq', 'qf', 'qd', 'bq' ]
             },
 
             // buttons size in px
@@ -51,6 +51,15 @@
 
             // class to add to the wrapper div
             wrapperClass: 'nowysiwyg-wrapper',
+
+            // use entities, avoiding special characters
+            useEntities: false,
+
+            // entities and their special character, in UTF-8
+            specialChars: {
+                '&ldquo;': '“',
+                '&rdquo;': '”'
+            }
 
             // styles for the wrapper div
             stylesWrapper: {
@@ -387,20 +396,8 @@
 
         },
 
-        addTag: function (tag, el, attributes) {
+        alterText: function (el, tagBefore, tagAfter) {
 
-            var attrString = '';
-            if (typeof(attributes) != 'undefined') {
-
-                for(var attr in options) {
-                    attrString += ' ' + attr + '="' + attributes[attr] + '"';
-                }
-
-            }
-
-            var tagBefore = "<" + tag + attrString +">";
-            var tagAfter = "</" + tag + ">";
-            
             if (el.setSelectionRange) {
                 var scrollTop = el.scrollTop;
                 var textBefore = el.value.substring(0,el.selectionStart);
@@ -418,12 +415,42 @@
                 else {
                     el.value = el.value + tagBefore + tagAfter;
                 }
+            }        
+        },
+
+        addTag: function (tag, el, attributes) {
+
+            var attrString = '';
+            if (typeof(attributes) != 'undefined') {
+
+                for(var attr in options) {
+                    attrString += ' ' + attr + '="' + attributes[attr] + '"';
+                }
+
             }
+
+            var tagBefore = "<" + tag + attrString +">";
+            var tagAfter = "</" + tag + ">";
+            this.alterText (el, tagBefore, tafAfter);
 
         },
 
-        addHTML: function (html, el) {
+        addHTMLs: function (htmlBefore, htmlAfter, el) {
+            this.alterText (el, htmlBefore, htmlAfter);
+        },      
 
+        addHTML: function (html, el) {
+            this.alterText (el, '', html);
+        },
+
+        specialChar: function (sc) {
+
+            if (this.config.useEntities) {
+                return sc;
+            }
+            else {
+                return this.config.specialChars[sc];
+            }
         }
 
         buttons: {
@@ -514,33 +541,45 @@
 
             },
 
+            br: function (el) {
+
+            },
+
+            ul: function (el) {
+
+            },
+
+            ol: function (el) {
+
+            },            
+
             // non-brekable space
             nbsp: function (el) {
-
+                that.addHTML('&nbsp;', el);
             },
 
-            // left quote
-            lq: function (el) {
-
+            // nice single quotes
+            q: function (el) {
+                that.addHTMLs(that.specialChar('&ldquo;'), that.specialChar('&rdquo'), el);
             },
 
-            // right quote
+            // nice double quotes
+            qq: function (el) {
+                that.addHTMLs(that.specialChar('&ldquo;'), that.specialChar('&rdquo'), el);
+            },
+
+            // nice quotes French
             rq: function (el) {
-
+                that.addHTMLs(that.specialChar('&ldquo;'), that.specialChar('&rdquo'), el);
             },
 
-            // left quote French
-            lqf: function (el) {
-
-            },
-
-            // right quote French
-            rqf: function (el) {
-
+            // nice quotes German
+            rq: function (el) {
+                that.addHTMLs(that.specialChar('&ldquo;'), that.specialChar('&rdquo'), el);
             },
 
             // blockquote quote
-            rqf: function (el) {
+            bqq: function (el) {
 
             },
 
