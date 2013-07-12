@@ -13,3 +13,5 @@ Main features:
 * styles the buttons according to your textarea borders, based on each of the 4 borders individually.
 * custom buttons and functions allow full extensibility
 * intended for developers who know what they are doing and want the full control of HTML, not for your average end-user.
+* default buttons for usual styling, special characters, etc
+* advanced buttons (TODO): ajax loaded list of files or images to add
